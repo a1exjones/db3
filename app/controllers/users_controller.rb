@@ -54,8 +54,49 @@ def splatts
 
 	render json: @user.splatts
 	end	
+	
+	
+def show_follows
+	@user = User.find(params[:id])
+
+	render json: @user.follows
+	end	
+
+def show_followers
+	@user = User.find(params[:id])
+	
+	render json: @user.followed_by
+	end
+
+def add_follows
+	#params[:id] is user who follows 
+	#params[:follows_id] is user to be followed
+	
+	#make follower
+	@follower = User.find(params[:id])
+	
+	#make followed
+	@followed = User.find(params[:follows_id])
+	
+	if 
+	@follower.follows << @followed
+		head :no_content
+	else
+	render json @follower.errors, status: :unprocessable_entity
+	end
+end
 
 
+def delete_follows
+
+	@follower = User.find(params[:id])
+	@followed = User.find(params[:follows_id])
+
+	@follower.follows.delete(followed)
+		head :no_content
+		
+	end		
+	
 
 private
 
