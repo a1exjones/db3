@@ -6,6 +6,7 @@ Splatter::Application.routes.draw do
   get 'users/followers/:id' => 'users#show_followers'
   post 'users/follows' => 'users#add_follows'
   delete 'users/follows/:id/:follows_id' => 'users#delete_follows'
+  get 'users/splatts_feed/:id' => 'users#splatts_feed'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

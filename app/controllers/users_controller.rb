@@ -1,11 +1,26 @@
 class UsersController < ApplicationController
-  # GET /users
+
+##################################################### 
+##### 			   Users Controller	            ##### 
+##################################################### 
+
+##################################################### 
+#  				HTTP Request Methods 				#
+##################################################### 
+  
+#######       Returns a list of all Users     #######
+ 
+ # GET /users
   # GET /users.json
+  
   def index
     @users = User.all
-
     render json: @users
   end
+  
+##################################################### 
+ 
+#####   Returns the user with the specific ID   #####
 
   # GET /users/1
   # GET /users/1.json
@@ -15,8 +30,13 @@ class UsersController < ApplicationController
     render json: @user
   end
 
+##################################################### 
+
+##  Creates a new user with data in the POST body  ##
+
   # POST /users
   # POST /users.json
+  
   def create
     @user = User.new(user_params(params[:user]))
 
@@ -26,6 +46,10 @@ class UsersController < ApplicationController
       render json: @user.errors, status: :unprocessable_entity
     end
   end
+  
+#####################################################
+
+##    Updates a user with data in the PUT body     ##
 
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
@@ -38,6 +62,10 @@ class UsersController < ApplicationController
       render json: @user.errors, status: :unprocessable_entity
     end
   end
+  
+#####################################################
+
+##     Deletes the user with the specific ID       ##
 
   # DELETE /users/1
   # DELETE /users/1.json
@@ -48,6 +76,12 @@ class UsersController < ApplicationController
     head :no_content
   end
 
+#####################################################
+
+##   Returns a list of specified user's splatts    ##
+
+  # GET /users/splatts/1
+  # GET /users/splatts/1.json
 
 def splatts 
 	@user = User.find(params[:id])
@@ -55,18 +89,23 @@ def splatts
 	render json: @user.splatts
 	end	
 	
-	
-def show_follows
-	@user = User.find(params[:id])
+#####################################################
 
-	render json: @user.follows
-	end	
+##    Returns the specified user's "news feed"     ##
 
-def show_followers
-	@user = User.find(params[:id])
+  # GET /users/splatts_feed/1
 	
-	render json: @user.followed_by
-	end
+def splatts_feed
+	@feed = Splatt.find_by_sql("SELECT splatts.user_id, splatts.body, splatts.created_at FROM splatts JOIN follows ON follows.followed_id = splatts.user_id WHERE follows.follower_id = #{params[:id]} ORDER BY splatts.created_at")
+	
+	render json: @feed
+end
+
+#####################################################
+
+## Creates a follower/followed rel between users   ##
+
+  #POST /users/follows
 
 def add_follows
 	#params[:id] is user who follows 
@@ -86,6 +125,33 @@ def add_follows
 	end
 end
 
+#####################################################
+
+## Returns a list of the users followed by the user ##
+	
+  #GET /users/follow/[:id]
+	
+def show_follows
+	@user = User.find(params[:id])
+
+	render json: @user.follows
+	end	
+	
+#####################################################
+
+## Returns a list of the users follow the specified user ##
+
+  #GET /users/follower/[:id]
+
+def show_followers
+	@user = User.find(params[:id])
+	
+	render json: @user.followed_by
+	end
+	
+#####################################################
+
+## causes user with id1 to unfollow the user with id2 ##
 
 def delete_follows
 
@@ -97,6 +163,11 @@ def delete_follows
 		
 	end		
 	
+#####################################################
+
+##################################################### 
+#  			     	Private Methods 				#
+##################################################### 
 
 private
 
