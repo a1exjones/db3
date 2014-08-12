@@ -118,10 +118,10 @@ def add_follows
 	@followed = User.find(params[:follows_id])
 	
 	if 
-	@follower.follows << @followed
+		@follower.follows << @followed
 		head :no_content
 	else
-	render json @follower.errors, status: :unprocessable_entity
+		render json: @follower.errors, status: :unprocessable_entity
 	end
 end
 
@@ -153,12 +153,14 @@ def show_followers
 
 ## causes user with id1 to unfollow the user with id2 ##
 
+	#DELETE
+
 def delete_follows
 
 	@follower = User.find(params[:id])
 	@followed = User.find(params[:follows_id])
 
-	@follower.follows.delete(followed)
+	@follower.follows.delete(@followed)
 		head :no_content
 		
 	end		
